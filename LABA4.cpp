@@ -16,6 +16,16 @@ struct Tree
 	}
 };
 
+struct spis {
+	int value;
+	spis* pointer;
+	spis() {
+		value = 0;
+		pointer = NULL;
+	}
+};
+
+
 void Input(Tree*& el, int v)
 {
 	if (el == NULL)
@@ -94,9 +104,40 @@ Tree* Find(Tree* el, int v)
 	return result;
 }
 
+void Spisok(spis*& head, Tree* el, spis*& p)
+{
+	if (el != NULL)
+	{
+		spis* p1 = new spis;
+		Spisok(head, el->left, p);
+		p1->value = el->value;
+		if (p == NULL)
+		{
+			head = p1;
+			p = p1;
+		}
+		else
+		{
+			p->pointer = p1;
+			p = p1;
+		}
+		Spisok(head, el->right, p);
+	}
+}
+
+void Out(spis* l) {
+	cout << "Spisok: ";
+	while (l != NULL) {
+		cout << l->value << " ";
+		l = l->pointer;
+	}
+	cout << endl;
+}
 
 int main() {
 	Tree* root = NULL;
+	spis* first = NULL;
+	spis* two = NULL;
 	cout << "Vvedite kolichestvo dereva = ";
 	int n, x;
 	cin >> n;
@@ -110,11 +151,14 @@ int main() {
 	cout << "Derevo: ";
 	Output(root);
 	cout << endl;
+
+	Spisok(first, root, two);
+	Out(first);
+
 	int ud;
 	cout << endl;
 	cout << "VVedite koren kotoriy udaliti = ";
 	cin >> ud;
-
 	Tree* e = Find(root, ud);
 	Detach(root, e);
 	Remove(e);
@@ -122,7 +166,6 @@ int main() {
 	cout << "Derevo bes kornya: ";
 	Output(root);
 	cout << endl;
-
 
 	Tree* e1 = Find(root, ud);
 	Detach(root, e1);
